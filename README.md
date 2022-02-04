@@ -1,4 +1,4 @@
-# 🚀 Welcome to your React redux project!
+# 🚀 Welcome to your Movies&TV project!
 
 This project has been created using **webpack-cli**, you can now run
 
