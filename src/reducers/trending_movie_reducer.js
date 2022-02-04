@@ -2,7 +2,8 @@ import {
   UPDATE_TRENDING_MOVIES,
   UPDATE_TRENDING_TV,
   UPDATE_PRIME_SHOW,
-  UPDATE_REGIONAL_MOVIES
+  UPDATE_REGIONAL_MOVIES,
+  UPDATE_PRIME_SHOW_EPISODES
 } from "../utils/Constants";
 const inititalState = {
   trendingMovies: [],
@@ -27,6 +28,10 @@ const trendingReducer = (state = inititalState, action) => {
     case UPDATE_PRIME_SHOW:
       state = Object.assign({}, state);
       state.primeShow = action.payload;
+      return state;
+    case UPDATE_PRIME_SHOW_EPISODES:
+      state = Object.assign({}, state);
+      state.primeShow.episodes = action.payload;
       return state;
     default:
       return state;

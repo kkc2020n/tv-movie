@@ -13,7 +13,7 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    updateRegionalMovies: (data) => dispatch(updateRegionalMovies(data))
+    updateRegionalMovies: (data) => dispatch(updateRegionalMovies(data)),
   };
 };
 

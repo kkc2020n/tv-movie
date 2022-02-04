@@ -2,6 +2,7 @@ import React from "react";
 import TrendingMoviesList from "./TrendingMoviesList";
 import TrendingTVList from "./TrendingTVList";
 import RegionalMovies from "./RegionalMovies";
+import PrimeShow from "./PrimeShow";
 import Header from "./Header";
 
 const App = (props) => {
@@ -11,6 +12,8 @@ const App = (props) => {
       <TrendingMoviesList />
       <div className="divider"></div>
       <TrendingTVList />
+      <div className="divider"></div>
+      <PrimeShow />
       <div className="divider"></div>
       <RegionalMovies />
     </div>
