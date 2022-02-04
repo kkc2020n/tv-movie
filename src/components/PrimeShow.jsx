@@ -65,6 +65,10 @@ const PrimeShow = (props) => {
             </div>
           </div>
         </a>
+        <div>
+          <div className="ep-title">{item.name}</div>
+          <div className="--overview ">{item.overview}</div>
+        </div>
       </li>
     );
   });
