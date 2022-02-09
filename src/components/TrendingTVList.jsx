@@ -5,6 +5,9 @@ import { connect } from "react-redux";
 import { GENRE_TV, TRENDING_TV } from "../utils/ServiceUrls";
 import _ from "underscore";
 import { get } from "../utils/Request";
+import { updateisHome } from "../actions/app_actions";
+import { updateMediaDetail } from "../actions/media_details_action";
+import { BASE_TV_URL, API_KEY } from "../utils/Constants";
 
 const mapStateToProps = (state) => {
   return { trendingTV: state.trend.trendingTV };
@@ -12,13 +15,27 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    updateTrendingTV: (data) => dispatch(updateTrendingTV(data))
+    updateTrendingTV: (data) => dispatch(updateTrendingTV(data)),
+    updateMediaDetail: (data) => dispatch(updateMediaDetail(data)),
+    updateisHome: (data) => dispatch(updateisHome(data))
   };
 };
 
 const TrendingTVList = (props) => {
   const { trendingTV } = props;
 
+  const getEpisodeDetails = (show) => {
+    console.log(show, "show");
+    const tvdetail = `${BASE_TV_URL}/${show.id}?api_key=${API_KEY}&language=en-US`;
+    const castdetail = `${BASE_TV_URL}/${show.id}/credits?api_key=${API_KEY}&language=en-US`;
+    const media = Promise.all([get(tvdetail), get(castdetail)]);
+    media.then(([tvresp, castresp]) => {
+      props.updateisHome(false);
+      const data = tvresp.data;
+      data.credits = castresp.data;
+      props.updateMediaDetail(data);
+    });
+  };
   const getTrendingTvData = () => {
     const trend = Promise.all([get(TRENDING_TV), get(GENRE_TV)]);
     trend.then(([tv, genreData]) => {
@@ -32,7 +49,7 @@ const TrendingTVList = (props) => {
         return item;
       });
       console.log("moviedata", tvdata);
-      props.updateTrendingTV(tvdata.slice(0, 5));
+      props.updateTrendingTV(tvdata);
     });
   };
 
@@ -47,7 +64,11 @@ const TrendingTVList = (props) => {
         <a className="movie-item">
           <div className="canvas-left">
             <div className="canvas-artwork">
-              <div className="artwork">
+              <div
+                className="artwork"
+                style={{ cursor: "pointer" }}
+                onClick={(e) => getEpisodeDetails(item)}
+              >
                 <picture>
                   <source type="image/jpeg" srcSet={imgpath}></source>
                   <img

@@ -1,6 +1,6 @@
 import axios from "axios";
-const get = (url, requestType, reqHeaders = {}) => {
-  return axios.get(url);
+const get = async (url, requestType, reqHeaders = {}) => {
+  return await axios.get(url);
 };
 
 export { get };

@@ -3,7 +3,7 @@
 const path = require("path");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 
-const isProduction = process.env.NODE_ENV == "production";
+const isProduction = process.env.NODE_ENV == "development";
 
 const stylesHandler = "style-loader";
 
@@ -13,9 +13,10 @@ const config = {
     filename: "bundle.js",
     path: path.resolve(__dirname, "build")
   },
+  watchOptions: { poll: true },
   devServer: {
     port: 3000,
-    host: "localhost"
+    host: "0.0.0.0"
   },
   plugins: [
     new HtmlWebpackPlugin({

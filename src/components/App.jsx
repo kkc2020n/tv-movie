@@ -1,23 +1,20 @@
 import React from "react";
-import TrendingMoviesList from "./TrendingMoviesList";
-import TrendingTVList from "./TrendingTVList";
-import RegionalMovies from "./RegionalMovies";
-import PrimeShow from "./PrimeShow";
+import Home from "./Home";
+import MediaDetail from "./MediaDetail";
 import Header from "./Header";
+import { connect } from "react-redux";
+
+const mapStateToProps = (state) => {
+  return { appState: state.appState };
+};
 
 const App = (props) => {
   return (
     <div className="main-content">
       <Header />
-      <TrendingMoviesList />
-      <div className="divider"></div>
-      <TrendingTVList />
-      <div className="divider"></div>
-      <PrimeShow />
-      <div className="divider"></div>
-      <RegionalMovies />
+      {props.appState.isHome ? <Home /> : <MediaDetail />}
     </div>
   );
 };
 
-export default App;
+export default connect(mapStateToProps)(App);

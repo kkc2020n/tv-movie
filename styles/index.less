@@ -1,3 +1,5 @@
+@import url("./media.less");
+
 @media (prefers-color-scheme: light) {
   body {
     margin: auto;
@@ -9,6 +11,10 @@
     --appPrimaryBackgroundColor: #2d2d2d;
     --systemPrimary: rgba(0, 0, 0, 0.85);
     --systemSecondary: rgba(0, 0, 0, 0.5);
+    --systemPrimary-onDark: rgba(255, 255, 255, 0.85);
+    --systemSecondary-onDark: rgba(255, 255, 255, 0.55);
+    --keyColorBackground: #007aff;
+    --defaultButtonBackgroundColor: rgba(84, 84, 84, 0.5);
   }
 }
 
@@ -25,6 +31,9 @@
     --appPrimaryBackgroundColor: #2d2d2d;
     --systemPrimary: rgba(255, 255, 255, 0.85);
     --systemSecondary: rgba(255, 255, 255, 0.55);
+    --systemSecondary-onDark: rgba(255, 255, 255, 0.55);
+    --keyColorBackground: #007aff;
+    --defaultButtonBackgroundColor: rgba(84, 84, 84, 0.5);
   }
 }
 
@@ -35,7 +44,6 @@
 body {
   height: 100%;
   max-height: 100%;
-  position: absolute;
   width: 100%;
   font-family: -apple-system, BlinkMacSystemFont, sans-serif;
 }
@@ -117,8 +125,12 @@ body {
 
 .trending-list.big {
   grid-auto-columns: calc((100% - 2 * var(--grid-column-gap)) / 4);
+
   .canvas-left {
     width: 100%;
+    .artwork {
+      cursor: pointer;
+    }
   }
 }
 
@@ -176,6 +188,7 @@ body {
             top: -9999px;
             transition-duration: 0.15s;
             transition-property: opacity;
+            transition: all 0.2s ease-in-out;
           }
         }
       }
