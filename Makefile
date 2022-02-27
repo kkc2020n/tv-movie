@@ -6,3 +6,9 @@ serve:
 
 build:
 	npm run build
+
+docker-build:
+	docker build -t gandalf .
+
+docker-tag:
+	docker tag gandalf:latest gandalf:staging

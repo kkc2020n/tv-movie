@@ -49,7 +49,7 @@ const TrendingTVList = (props) => {
         return item;
       });
       console.log("moviedata", tvdata);
-      props.updateTrendingTV(tvdata);
+      props.updateTrendingTV(tvdata.slice(0, 10));
     });
   };
 
@@ -72,6 +72,7 @@ const TrendingTVList = (props) => {
                 <picture>
                   <source type="image/jpeg" srcSet={imgpath}></source>
                   <img
+                    loading="lazy"
                     className="media-artwork-v2__image"
                     src={imgpath}
                     sizes={`(min-width:300px) and (max-width:739px) 739px, (min-width:740px) and (max-width:999px) 499px, (min-width:1000px) and (max-width:1319px) 659px, 559px`}
@@ -93,7 +94,7 @@ const TrendingTVList = (props) => {
   return (
     <div className="trend-block">
       <div>
-        <h4 className="type-headline">Trending TV Shows </h4>
+        <h2 className="type-headline">Trending TV Shows </h2>
       </div>
       <div className="grid-container">
         <ul className="trending-list">{rowData}</ul>

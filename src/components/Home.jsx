@@ -2,7 +2,8 @@ import React from "react";
 import TrendingMoviesList from "./TrendingMoviesList";
 import TrendingTVList from "./TrendingTVList";
 import RegionalMovies from "./RegionalMovies";
-import PrimeShow from "./PrimeShow";
+import AdultList from "./AdultList";
+import Banner from "./Banner";
 
 const Home = (props) => {
   return (
@@ -10,10 +11,12 @@ const Home = (props) => {
       <TrendingMoviesList />
       <div className="divider"></div>
       <TrendingTVList />
+
+      <Banner />
       <div className="divider"></div>
-      {/* <PrimeShow />
-      <div className="divider"></div> */}
       <RegionalMovies />
+      {/* <div className="divider"></div>
+      <AdultList /> */}
     </div>
   );
 };

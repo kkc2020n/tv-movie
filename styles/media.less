@@ -188,10 +188,19 @@
   overflow: hidden;
   height: 100%;
   background-color: rgb(74, 69, 67);
+  background-color: rgb(33, 33, 28);
+  position: relative;
+  width: 100%;
+  z-index: 1;
+  min-width: 130px;
+  width: 130px;
 }
 
 .profile-list {
   padding: 0;
+  padding-left: 15px;
+  margin: 0;
+  list-style: none;
   display: grid;
   grid-auto-flow: column;
   overflow-x: auto;
@@ -200,12 +209,14 @@
   margin-bottom: -20px;
   padding-top: 20px;
   padding-bottom: 20px;
-  --grid-rows: 1;
-  --grid-column-gap: 20px;
-  grid-auto-columns: calc((100% - 9 * var(--grid-column-gap)) / 10);
+  grid-auto-columns: calc((100% - 8 * var(--grid-column-gap)) / 10);
   grid-template-rows: repeat(var(--grid-rows), -webkit-max-content);
   grid-template-rows: repeat(var(--grid-rows), max-content);
-  grid-column-gap: var(--grid-column-gap);
+  grid-column-gap: 20px;
+
+  li {
+    margin-right: 15px;
+  }
 }
 
 .profile-lockup__details {
@@ -220,5 +231,94 @@
 }
 
 .media_div {
-  margin-left: 15px;
+  max-width: 1650px;
+  margin: auto;
+  padding: 10px;
+  h2 {
+    font-size: 1.7rem;
+    line-height: 1.23;
+  }
+  .shelf-grid__header {
+    padding: 13px 25px;
+  }
+}
+
+.shelf-grid {
+  position: relative;
+  padding: 0 40px;
+  z-index: 1;
+}
+
+.shelf-grid__body {
+  margin: -15px;
+  width: 100%;
+  overflow: hidden;
+  margin-bottom: 20px;
+}
+
+.shelf-grid__body {
+  width: 100%;
+  overflow: hidden;
+  box-sizing: content-box;
+}
+
+.img-profile {
+  width: 130px;
+  min-width: 130px;
+}
+
+div {
+  -webkit-user-drag: none;
+}
+
+.media-main {
+  max-width: 1680px;
+  margin: auto;
+  padding-top: 16px;
+}
+.ember-power-select-status-icon {
+  border-color: var(--systemSecondary) transparent transparent;
+  border-width: 7px 4px;
+  position: absolute;
+  display: inline-block;
+  width: 0;
+  height: 0;
+  top: 0;
+  bottom: 0;
+  margin: auto;
+  border-style: solid;
+  border-width: 7px 4px 0;
+  right: 5px;
+}
+
+.ember-basic-dropdown {
+  width: max-content;
+  line-height: 27px;
+  position: relative;
+}
+
+.ember-basic-dropdown .ember-power-select-trigger,
+.typ-headline-emph,
+.upsell-banner__title {
+  font-weight: 700;
+  font-size: 1.7rem;
+}
+
+.ember-power-select-trigger {
+  padding: 0 16px 0 0;
+}
+
+.ember-power-select-trigger {
+  position: relative;
+  border-radius: 4px;
+  overflow-x: hidden;
+  text-overflow: ellipsis;
+  min-height: 1.75em;
+  color: inherit;
+}
+
+.episode-shelf-header .ember-power-select-trigger:after {
+  content: "";
+  display: table;
+  clear: both;
 }

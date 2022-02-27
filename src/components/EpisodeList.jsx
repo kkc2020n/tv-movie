@@ -74,8 +74,8 @@ const EpisodeList = (props) => {
       </div>
       <div className="divider"></div>
       <div className="media_div">
-        <div>
-          <h4>Cast & Crew</h4>
+        <div className="shelf-grid__header">
+          <h2>Cast & Crew</h2>
         </div>
         <CastList data={media?.credits?.cast ? media.credits.cast : []} />
       </div>

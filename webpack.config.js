@@ -3,7 +3,7 @@
 const path = require("path");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 
-const isProduction = process.env.NODE_ENV == "development";
+const isProduction = process.env.NODE_ENV == "production";
 
 const stylesHandler = "style-loader";
 

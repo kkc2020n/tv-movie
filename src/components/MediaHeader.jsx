@@ -32,6 +32,7 @@ const MediaHeader = (props) => {
             style={{ width: "100%", height: "945" }}
             className="media-artwork-v2__image"
             src={imgpath}
+            decoding="async"
             sizes={`(min-width:300px) and (max-width:739px) 739px, (min-width:740px) and (max-width:999px) 499px, (min-width:1000px) and (max-width:1319px) 439px, 419px`}
           />
         </picture>

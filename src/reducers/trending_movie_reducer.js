@@ -4,14 +4,16 @@ import {
   UPDATE_PRIME_SHOW,
   UPDATE_REGIONAL_MOVIES,
   UPDATE_PRIME_SHOW_EPISODES,
-  UPDATE_REGIONAL_HI_MOVIES
+  UPDATE_REGIONAL_HI_MOVIES,
+  UPDATE_ADULT_MOVIES
 } from "../utils/Constants";
 const inititalState = {
   trendingMovies: [],
   trendingTV: [],
   primeShow: [],
   regionalMovies: [],
-  regionalHiMovies: []
+  regionalHiMovies: [],
+  adultMovies: []
 };
 const trendingReducer = (state = inititalState, action) => {
   switch (action.type) {
@@ -34,6 +36,9 @@ const trendingReducer = (state = inititalState, action) => {
       state = Object.assign({}, state);
       state.primeShow = action.payload;
       return state;
+    case UPDATE_ADULT_MOVIES:
+      state = Object.assign({}, state);
+      state.adultMovies = action.payload;
     default:
       return state;
   }

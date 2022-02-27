@@ -4,7 +4,8 @@ import {
   UPDATE_PRIME_SHOW,
   UPDATE_REGIONAL_MOVIES,
   UPDATE_PRIME_SHOW_EPISODES,
-  UPDATE_REGIONAL_HI_MOVIES
+  UPDATE_REGIONAL_HI_MOVIES,
+  UPDATE_ADULT_MOVIES
 } from "../utils/Constants";
 export const updateTrendingTV = (payload) => {
   return {
@@ -44,6 +45,13 @@ export const updatePrimeShow = (payload) => {
 export const updatePrimeShowEpisodes = (payload) => {
   return {
     type: UPDATE_PRIME_SHOW_EPISODES,
+    payload
+  };
+};
+
+export const updateAdultMovies = (payload) => {
+  return {
+    type: UPDATE_ADULT_MOVIES,
     payload
   };
 };

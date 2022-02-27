@@ -1,15 +1,8 @@
 import React from "react";
 import { useEffect } from "react";
-import {
-  updateRegionalMovies,
-  updateRegionalHiMovies
-} from "../actions/trending_action";
+import { updateRegionalMovies, updateRegionalHiMovies } from "../actions/trending_action";
 import { connect } from "react-redux";
-import {
-  GENRE_MOVIE,
-  REGIONAL_TE_MOVIES,
-  REGIONAL_HI_MOVIES
-} from "../utils/ServiceUrls";
+import { GENRE_MOVIE, REGIONAL_TE_MOVIES, REGIONAL_HI_MOVIES } from "../utils/ServiceUrls";
 import _ from "underscore";
 import { get } from "../utils/Request";
 
@@ -32,11 +25,7 @@ const RegionalMovies = (props) => {
   const { regionalMovies, regionalHiMovies } = props;
 
   const getRegionalMovieData = () => {
-    const trend = Promise.all([
-      get(REGIONAL_TE_MOVIES),
-      get(GENRE_MOVIE),
-      get(REGIONAL_HI_MOVIES)
-    ]);
+    const trend = Promise.all([get(REGIONAL_TE_MOVIES), get(GENRE_MOVIE), get(REGIONAL_HI_MOVIES)]);
     trend.then(([movie, genreData, hindimovies]) => {
       const data = movie.data;
       const hindidata = hindimovies.data;
@@ -51,18 +40,22 @@ const RegionalMovies = (props) => {
       const himoviedata = hindidata.results.map((item) => {
         const [genre_first] = item.genre_ids;
         const [genreobj] = _.filter(genreArr, (g) => g.id === genre_first);
-        const genre_name = genreobj.name;
+        const genre_name = 'Drama';
         item.genre_name = genre_name;
         return item;
       });
-      const filteredmoviedata = _.filter(
-        moviedata,
-        (i) => i.backdrop_path !== null
-      );
-      const filteredhimoviedata = _.filter(
-        himoviedata,
-        (i) => i.backdrop_path !== null
-      );
+      const filteredmoviedata = _.filter(moviedata, (i) => i.backdrop_path !== null);
+      const filteredhimoviedata = _.filter(himoviedata, (i) => i.backdrop_path !== null);
+      filteredmoviedata.sort(function(a,b){
+        // Turn your strings into dates, and then subtract them
+        // to get a value that is either negative, positive, or zero.
+        return new Date(b.release_date) - new Date(a.release_date);
+      });
+      filteredhimoviedata.sort(function(a,b){
+        // Turn your strings into dates, and then subtract them
+        // to get a value that is either negative, positive, or zero.
+        return new Date(b.release_date) - new Date(a.release_date);
+      });
       props.updateRegionalMovies(filteredmoviedata.slice(0, 5));
       props.updateRegionalHiMovies(filteredhimoviedata.slice(0, 5));
     });
@@ -111,6 +104,7 @@ const RegionalMovies = (props) => {
                 <picture>
                   <source type="image/jpeg" srcSet={imgpath}></source>
                   <img
+                    loading="lazy"
                     className="media-artwork-v2__image"
                     src={imgpath}
                     sizes={`(min-width:300px) and (max-width:739px) 739px, (min-width:740px) and (max-width:999px) 499px, (min-width:1000px) and (max-width:1319px) 659px, 559px`}
@@ -131,14 +125,14 @@ const RegionalMovies = (props) => {
   return (
     <div className="trend-block">
       <div>
-        <h4 className="type-headline">Regional Telugu Movies </h4>
+        <h2 className="type-headline">Regional Telugu Movies </h2>
       </div>
       <div className="grid-container">
         <ul className="trending-list">{rowData}</ul>
       </div>
       <div className="divider"></div>
       <div>
-        <h4 className="type-headline">Regional Hindi Movies </h4>
+        <h2 className="type-headline">Regional Hindi Movies </h2>
       </div>
       <div className="grid-container">
         <ul className="trending-list">{hiRowData}</ul>
