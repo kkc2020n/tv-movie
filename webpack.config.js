@@ -9,6 +9,9 @@ const stylesHandler = "style-loader";
 
 const config = {
   entry: "./src/main.jsx",
+  // Target browsers directly — prevents webpack 5 from emitting
+  // ES6+ iterator/arrow syntax that breaks older browsers
+  target: ["web", "es5"],
   output: {
     filename: "bundle.js",
     path: path.resolve(__dirname, "build")
