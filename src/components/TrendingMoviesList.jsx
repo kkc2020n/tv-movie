@@ -1,87 +1,90 @@
-import React from "react";
-import { useEffect } from "react";
-import { updateTrendingMovies } from "../actions/trending_action";
-import { connect } from "react-redux";
-import { GENRE_MOVIE, TRENDING_MOVIES } from "../utils/ServiceUrls";
-import _ from "underscore";
-import { get } from "../utils/Request";
+import React, { useEffect, useRef } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { fetchTrendingMovies, fetchMovieGenres } from "../slices/trendingMoviesSlice";
 
-const mapStateToProps = (state) => {
-  console.log(state);
-  return { trendingMovies: state.trend.trendingMovies };
-};
-
-const mapDispatchToProps = (dispatch) => {
-  return {
-    updateTrendingMovies: (data) => dispatch(updateTrendingMovies(data))
-  };
-};
-
-const TrendingList = (props) => {
-  const { trendingMovies } = props;
-
-  const getTrendingMovieData = () => {
-    const trend = Promise.all([get(TRENDING_MOVIES), get(GENRE_MOVIE)]);
-    trend.then(([movie, genreData]) => {
-      const data = movie.data;
-      const genreArr = genreData.data.genres;
-      const moviedata = data.results.map((item) => {
-        const [genre_first] = item.genre_ids;
-        const [genreobj] = _.filter(genreArr, (g) => g.id === genre_first);
-        const genre_name = genreobj.name;
-        item.genre_name = genre_name;
-        return item;
-      });
-      console.log("moviedata", moviedata);
-      props.updateTrendingMovies(moviedata.slice(0, 5));
-    });
-  };
+const TrendingMoviesList = () => {
+  const dispatch = useDispatch();
+  const listRef = useRef(null);
+  const { trendingMovies, genres } = useSelector((state) => state.trendingMovies);
 
   useEffect(() => {
-    getTrendingMovieData();
-  }, []);
+    dispatch(fetchTrendingMovies());
+    dispatch(fetchMovieGenres());
+  }, [dispatch]);
 
-  console.log(trendingMovies);
-  const rowData = trendingMovies.map((item, i) => {
-    const imgpath = `http://image.tmdb.org/t/p/w780/${item.backdrop_path}`;
+  const scroll = (direction) => {
+    if (listRef.current) {
+      const scrollAmount = listRef.current.clientWidth * 0.75;
+      listRef.current.scrollBy({
+        left: direction === "left" ? -scrollAmount : scrollAmount,
+        behavior: "smooth",
+      });
+    }
+  };
+
+  const moviesWithGenres = (trendingMovies || []).map((item) => {
+    const genreId = item.genre_ids?.[0];
+    const genre = (genres || []).find((g) => g.id === genreId);
+    return { ...item, genre_name: genre?.name || "Movie" };
+  });
+
+  const displayMovies = moviesWithGenres.slice(0, 10);
+
+  const rowData = displayMovies.map((item, i) => {
+    const posterUrl = item.poster_path
+      ? `https://image.tmdb.org/t/p/w500${item.poster_path}`
+      : `https://image.tmdb.org/t/p/w780${item.backdrop_path}`;
+
     return (
-      <li data-index-item={i} key={i}>
-        <a className="movie-item">
-          <div className="canvas-left">
-            <div className="canvas-artwork">
-              <div className="artwork">
-                <picture>
-                  <source type="image/jpeg" srcSet={imgpath}></source>
-                  <img
-                    loading="lazy"
-                    className="media-artwork-v2__image"
-                    src={imgpath}
-                    sizes={`(min-width:300px) and (max-width:739px) 739px, (min-width:740px) and (max-width:999px) 499px, (min-width:1000px) and (max-width:1319px) 659px, 559px`}
-                  />
-                </picture>
-              </div>
+      <li data-index-item={i} key={item.id || i} className="shelf-item">
+        <div className="apple-card" role="button" tabIndex={0}>
+          <span className="rank-number">{i + 1}</span>
+          <div className="poster-wrapper">
+            <img
+              loading="lazy"
+              className="poster-img"
+              src={posterUrl}
+              alt={item.title || item.original_title}
+            />
+            <div className="card-gradient"></div>
+            <div className="card-info">
+              <div className="card-title">{item.title || item.original_title}</div>
+              <div className="card-genre">{item.genre_name}</div>
             </div>
           </div>
-          <div className="canvas-right">
-            <div className="--genre--text">{item.genre_name.toUpperCase()}</div>
-            <div className="--original-name">{item.original_title}</div>
-            <div className="--overview">{item.overview}</div>
-          </div>
-        </a>
+        </div>
       </li>
     );
   });
 
   return (
-    <div className="trend-block">
-      <div>
-        <h2 className="type-headline">Trending Movies </h2>
+    <section className="shelf-section">
+      <div className="shelf-header">
+        <h2 className="shelf-title">
+          Top 10 Movies <span className="chevron-icon">›</span>
+        </h2>
       </div>
-      <div className="grid-container">
-        <ul className="trending-list">{rowData}</ul>
+      <div className="shelf-carousel">
+        <button
+          className="carousel-arrow carousel-arrow-left"
+          onClick={() => scroll("left")}
+          aria-label="Previous"
+        >
+          ‹
+        </button>
+        <ul ref={listRef} className="shelf-track">
+          {rowData}
+        </ul>
+        <button
+          className="carousel-arrow carousel-arrow-right"
+          onClick={() => scroll("right")}
+          aria-label="Next"
+        >
+          ›
+        </button>
       </div>
-    </div>
+    </section>
   );
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(TrendingList);
+export default TrendingMoviesList;

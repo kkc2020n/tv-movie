@@ -1,20 +1,18 @@
 import React from "react";
+import { useSelector } from "react-redux";
 import Home from "./Home";
 import MediaDetail from "./MediaDetail";
 import Header from "./Header";
-import { connect } from "react-redux";
 
-const mapStateToProps = (state) => {
-  return { appState: state.appState };
-};
+const App = () => {
+  const { isHome } = useSelector((state) => state.app);
 
-const App = (props) => {
   return (
     <div className="main-content">
       <Header />
-      {props.appState.isHome ? <Home /> : <MediaDetail />}
+      {isHome ? <Home /> : <MediaDetail />}
     </div>
   );
 };
 
-export default connect(mapStateToProps)(App);
+export default App;

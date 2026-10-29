@@ -1,83 +1,122 @@
-import React from "react";
-import { useEffect } from "react";
-import { updateAdultMovies } from "../actions/trending_action";
-import { connect } from "react-redux";
+import React, { useEffect, useState, useRef } from "react";
+import axios from "axios";
 import { ADULT_LIST } from "../utils/ServiceUrls";
-import _ from "underscore";
-import { get } from "../utils/Request";
 
-const mapStateToProps = (state) => {
-  console.log(state);
-  return { adultMovies: state.trend.adultMovies };
-};
+const BADGES = [
+  "New Episode Every Wednesday",
+  "New Season 2 Dec",
+  "Must-See Hit",
+  "Critically Acclaimed",
+  "#1 Trending",
+];
 
-const mapDispatchToProps = (dispatch) => {
-  return {
-    updateAdultMovies: (data) => dispatch(updateAdultMovies(data))
-  };
-};
+const TAGLINES = [
+  "#1 in Crime on Apple TV",
+  "#1 in Comedy on Apple TV",
+  "Top Rated on Apple TV",
+  "#1 in Drama on Apple TV",
+  "Apple TV+ Original",
+];
 
-const AdultList = (props) => {
-  const { adultMovies } = props;
-
-  const getTrendingMovieData = () => {
-    const trend = Promise.all([get(ADULT_LIST)]);
-    trend.then(([movie]) => {
-      let data = movie.data.items;
-      data = data.map((item) => {
-        item.genre_name = "Adult";
-        return item;
-      });
-      const moviedata = _.filter(data, (e) => e.backdrop_path != null);
-      console.log("moviedata", moviedata);
-      props.updateAdultMovies(moviedata);
-    });
-  };
+const AdultList = () => {
+  const [movies, setMovies] = useState([]);
+  const listRef = useRef(null);
 
   useEffect(() => {
-    getTrendingMovieData();
+    axios
+      .get(ADULT_LIST)
+      .then((res) => {
+        const items = (res.data.items || []).filter(
+          (item) => item.backdrop_path || item.poster_path
+        );
+        setMovies(items);
+      })
+      .catch(console.error);
   }, []);
 
-  console.log(adultMovies);
-  const rowData = adultMovies.map((item, i) => {
-    const imgpath = `http://image.tmdb.org/t/p/w780/${item.backdrop_path}`;
-    return (
-      <li data-index-item={i} key={i}>
-        <a className="movie-item">
-          <div className="canvas-left">
-            <div className="canvas-artwork">
-              <div className="artwork">
-                <picture>
-                  <source type="image/jpeg" srcSet={imgpath}></source>
-                  <img
-                    className="media-artwork-v2__image"
-                    src={imgpath}
-                    sizes={`(min-width:300px) and (max-width:739px) 739px, (min-width:740px) and (max-width:999px) 499px, (min-width:1000px) and (max-width:1319px) 659px, 559px`}
-                  />
-                </picture>
-              </div>
-            </div>
-          </div>
-          <div className="canvas-right">
-            <div className="--genre--text">{item.genre_name.toUpperCase()}</div>
-            <div className="--original-name">{item.original_title}</div>
-            <div className="--overview">{item.overview}</div>
-          </div>
-        </a>
-      </li>
-    );
-  });
+  const scroll = (direction) => {
+    if (listRef.current) {
+      const scrollAmount = listRef.current.clientWidth * 0.75;
+      listRef.current.scrollBy({
+        left: direction === "left" ? -scrollAmount : scrollAmount,
+        behavior: "smooth",
+      });
+    }
+  };
+
+  if (!movies.length) return null;
 
   return (
-    <div className="trend-block">
-      <div>
-        <h4 className="type-headline">Trending Movies </h4>
+    <section className="shelf-section showcase-shelf-section">
+      <div className="shelf-header">
+        <h2 className="shelf-title">
+          Armchair Detectives Wanted
+        </h2>
       </div>
-      <div className="grid-container">
-        <ul className="trending-list">{rowData}</ul>
+      <div className="shelf-carousel">
+        <button
+          className="carousel-arrow carousel-arrow-left"
+          onClick={() => scroll("left")}
+          aria-label="Previous"
+        >
+          ‹
+        </button>
+        <ul ref={listRef} className="showcase-track">
+          {movies.map((item, i) => {
+            const imgUrl = item.backdrop_path
+              ? `https://image.tmdb.org/t/p/w780${item.backdrop_path}`
+              : `https://image.tmdb.org/t/p/w500${item.poster_path}`;
+
+            const badgeText = BADGES[i % BADGES.length];
+            const taglineText = TAGLINES[i % TAGLINES.length];
+
+            return (
+              <li key={item.id || i} className="showcase-item">
+                <div className="showcase-card" role="button" tabIndex={0}>
+                  <button
+                    className="card-action-btn"
+                    aria-label="Audio / Info"
+                    onClick={(e) => e.stopPropagation()}
+                  >
+                    <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
+                      <path d="M16.5 12c0-1.77-1.02-3.29-2.5-4.03v2.21l2.45 2.45c.03-.2.05-.41.05-.63zm2.5 0c0 .94-.2 1.82-.54 2.64l1.51 1.51C20.63 14.91 21 13.5 21 12c0-4.28-2.99-7.86-7-8.77v2.06c2.89.86 5 3.54 5 6.71zM4.27 3L3 4.27 7.73 9H3v6h4l5 5v-6.73l4.25 4.25c-.67.52-1.42.93-2.25 1.18v2.06c1.38-.31 2.63-.95 3.69-1.81L19.73 21 21 19.73l-9-9L4.27 3zM12 4L9.91 6.09 12 8.18V4z" />
+                    </svg>
+                  </button>
+                  <img
+                    loading="lazy"
+                    className="showcase-card-img"
+                    src={imgUrl}
+                    alt={item.title || item.name}
+                  />
+                  <div className="showcase-card-gradient"></div>
+                  <div className="showcase-card-content">
+                    {badgeText && (
+                      <span className="showcase-badge">{badgeText}</span>
+                    )}
+                    <h3 className="showcase-card-title">
+                      {item.title || item.name}
+                    </h3>
+                    <div className="showcase-meta">
+                      <span className="apple-tv-pill">tv</span>
+                      <span>TV Show · Drama · Thriller</span>
+                    </div>
+                    <div className="showcase-tagline">{taglineText}</div>
+                  </div>
+                </div>
+              </li>
+            );
+          })}
+        </ul>
+        <button
+          className="carousel-arrow carousel-arrow-right"
+          onClick={() => scroll("right")}
+          aria-label="Next"
+        >
+          ›
+        </button>
       </div>
-    </div>
+    </section>
   );
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(AdultList);
+export default AdultList;
