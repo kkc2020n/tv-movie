@@ -1,23 +1,17 @@
 import React from "react";
-import TrendingMoviesList from "./TrendingMoviesList";
 import TrendingTVList from "./TrendingTVList";
-import RegionalMovies from "./RegionalMovies";
+import TrendingMoviesList from "./TrendingMoviesList";
 import AdultList from "./AdultList";
-import Banner from "./Banner";
+import RegionalMovies from "./RegionalMovies";
 
-const Home = (props) => {
+const Home = () => {
   return (
-    <div>
-      <TrendingMoviesList />
-      <div className="divider"></div>
+    <main className="home-view">
       <TrendingTVList />
-
-      <Banner />
-      <div className="divider"></div>
+      <TrendingMoviesList />
+      {/* <AdultList /> */}
       <RegionalMovies />
-      {/* <div className="divider"></div>
-      <AdultList /> */}
-    </div>
+    </main>
   );
 };
 

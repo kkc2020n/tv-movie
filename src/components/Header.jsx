@@ -1,28 +1,28 @@
 import React from "react";
-import { updateisHome } from "../actions/app_actions";
-import { connect } from "react-redux";
+import { useDispatch } from "react-redux";
+import { setHome } from "../slices/appSlice";
 
-const mapDispatchToProps = (dispatch) => {
-  return {
-    updateisHome: (data) => dispatch(updateisHome(data))
-  };
-};
+const Header = () => {
+  const dispatch = useDispatch();
 
-const Header = (props) => {
   const goToHome = () => {
-    props.updateisHome(true);
+    dispatch(setHome(true));
   };
+
   return (
-    <div className="header">
-      <div
-        className="app-name"
-        onClick={goToHome}
-        style={{ cursor: "pointer" }}
-      >
-        Movies & TV
+    <header className="app-header">
+      <div className="header-inner">
+        <div
+          className="brand"
+          onClick={goToHome}
+          style={{ cursor: "pointer" }}
+        >
+          <span className="brand-tv-icon">tv</span>
+          <span className="brand-title">Movies &amp; TV</span>
+        </div>
       </div>
-    </div>
+    </header>
   );
 };
 
-export default connect(null, mapDispatchToProps)(Header);
+export default Header;

@@ -1,106 +1,102 @@
-import React from "react";
-import { useEffect } from "react";
-import { updateTrendingTV } from "../actions/trending_action";
-import { connect } from "react-redux";
-import { GENRE_TV, TRENDING_TV } from "../utils/ServiceUrls";
-import _ from "underscore";
-import { get } from "../utils/Request";
-import { updateisHome } from "../actions/app_actions";
-import { updateMediaDetail } from "../actions/media_details_action";
-import { BASE_TV_URL, API_KEY } from "../utils/Constants";
+import React, { useEffect, useRef } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { fetchTrendingTV, fetchTVGenres } from "../slices/trendingTVSlice";
+import { fetchMediaDetails } from "../slices/mediaDetailsSlice";
+import { setHome } from "../slices/appSlice";
 
-const mapStateToProps = (state) => {
-  return { trendingTV: state.trend.trendingTV };
-};
-
-const mapDispatchToProps = (dispatch) => {
-  return {
-    updateTrendingTV: (data) => dispatch(updateTrendingTV(data)),
-    updateMediaDetail: (data) => dispatch(updateMediaDetail(data)),
-    updateisHome: (data) => dispatch(updateisHome(data))
-  };
-};
-
-const TrendingTVList = (props) => {
-  const { trendingTV } = props;
-
-  const getEpisodeDetails = (show) => {
-    console.log(show, "show");
-    const tvdetail = `${BASE_TV_URL}/${show.id}?api_key=${API_KEY}&language=en-US`;
-    const castdetail = `${BASE_TV_URL}/${show.id}/credits?api_key=${API_KEY}&language=en-US`;
-    const media = Promise.all([get(tvdetail), get(castdetail)]);
-    media.then(([tvresp, castresp]) => {
-      props.updateisHome(false);
-      const data = tvresp.data;
-      data.credits = castresp.data;
-      props.updateMediaDetail(data);
-    });
-  };
-  const getTrendingTvData = () => {
-    const trend = Promise.all([get(TRENDING_TV), get(GENRE_TV)]);
-    trend.then(([tv, genreData]) => {
-      const data = tv.data;
-      const genreArr = genreData.data.genres;
-      const tvdata = data.results.map((item) => {
-        const [genre_first] = item.genre_ids;
-        const [genreobj] = _.filter(genreArr, (g) => g.id === genre_first);
-        const genre_name = genreobj.name;
-        item.genre_name = genre_name;
-        return item;
-      });
-      console.log("moviedata", tvdata);
-      props.updateTrendingTV(tvdata.slice(0, 10));
-    });
-  };
+const TrendingTVList = () => {
+  const dispatch = useDispatch();
+  const listRef = useRef(null);
+  const { trendingTV, genres } = useSelector((state) => state.trendingTV);
 
   useEffect(() => {
-    getTrendingTvData();
-  }, []);
+    dispatch(fetchTrendingTV());
+    dispatch(fetchTVGenres());
+  }, [dispatch]);
 
-  const rowData = trendingTV.map((item, i) => {
-    const imgpath = `http://image.tmdb.org/t/p/w780/${item.backdrop_path}`;
+  const handleShowClick = (item) => {
+    dispatch(fetchMediaDetails(item.id));
+    dispatch(setHome(false));
+  };
+
+  const scroll = (direction) => {
+    if (listRef.current) {
+      const scrollAmount = listRef.current.clientWidth * 0.75;
+      listRef.current.scrollBy({
+        left: direction === "left" ? -scrollAmount : scrollAmount,
+        behavior: "smooth",
+      });
+    }
+  };
+
+  const tvsWithGenres = (trendingTV || []).map((item) => {
+    const genreId = item.genre_ids?.[0];
+    const genre = (genres || []).find((g) => g.id === genreId);
+    return { ...item, genre_name: genre?.name || "TV Series" };
+  });
+
+  const displayTVs = tvsWithGenres.slice(0, 10);
+
+  const rowData = displayTVs.map((item, i) => {
+    const posterUrl = item.poster_path
+      ? `https://image.tmdb.org/t/p/w500${item.poster_path}`
+      : `https://image.tmdb.org/t/p/w780${item.backdrop_path}`;
+
     return (
-      <li data-index-item={i} key={i}>
-        <a className="movie-item">
-          <div className="canvas-left">
-            <div className="canvas-artwork">
-              <div
-                className="artwork"
-                style={{ cursor: "pointer" }}
-                onClick={(e) => getEpisodeDetails(item)}
-              >
-                <picture>
-                  <source type="image/jpeg" srcSet={imgpath}></source>
-                  <img
-                    loading="lazy"
-                    className="media-artwork-v2__image"
-                    src={imgpath}
-                    sizes={`(min-width:300px) and (max-width:739px) 739px, (min-width:740px) and (max-width:999px) 499px, (min-width:1000px) and (max-width:1319px) 659px, 559px`}
-                  />
-                </picture>
-              </div>
+      <li data-index-item={i} key={item.id || i} className="shelf-item">
+        <div
+          className="apple-card"
+          onClick={() => handleShowClick(item)}
+          role="button"
+          tabIndex={0}
+        >
+          <span className="rank-number">{i + 1}</span>
+          <div className="poster-wrapper">
+            <img
+              loading="lazy"
+              className="poster-img"
+              src={posterUrl}
+              alt={item.name || item.original_name}
+            />
+            <div className="card-gradient"></div>
+            <div className="card-info">
+              <div className="card-title">{item.name || item.original_name}</div>
+              <div className="card-genre">{item.genre_name}</div>
             </div>
           </div>
-          <div className="canvas-right">
-            <div className="--genre--text">{item.genre_name.toUpperCase()}</div>
-            <div className="--original-name">{item.name}</div>
-            <div className="--overview">{item.overview}</div>
-          </div>
-        </a>
+        </div>
       </li>
     );
   });
 
   return (
-    <div className="trend-block">
-      <div>
-        <h2 className="type-headline">Trending TV Shows </h2>
+    <section className="shelf-section">
+      <div className="shelf-header">
+        <h2 className="shelf-title">
+          Top 10 TV Shows <span className="chevron-icon">›</span>
+        </h2>
       </div>
-      <div className="grid-container">
-        <ul className="trending-list">{rowData}</ul>
+      <div className="shelf-carousel">
+        <button
+          className="carousel-arrow carousel-arrow-left"
+          onClick={() => scroll("left")}
+          aria-label="Previous"
+        >
+          ‹
+        </button>
+        <ul ref={listRef} className="shelf-track">
+          {rowData}
+        </ul>
+        <button
+          className="carousel-arrow carousel-arrow-right"
+          onClick={() => scroll("right")}
+          aria-label="Next"
+        >
+          ›
+        </button>
       </div>
-    </div>
+    </section>
   );
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(TrendingTVList);
+export default TrendingTVList;

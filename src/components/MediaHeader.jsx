@@ -1,35 +1,41 @@
 import React from "react";
-import _ from "underscore";
 
 const openLink = (link) => {
-  window.open(link, "_blank");
+  if (link) {
+    window.open(link, "_blank");
+  }
   return false;
 };
 
 const MediaHeader = (props) => {
-  const { media } = props.data;
-  const isEmpty = _.isEmpty(media);
+  const media = props.data?.media;
+  const isEmpty = !media || Object.keys(media).length === 0;
 
   if (!isEmpty) {
-    const [network] = media?.networks ? media?.networks : [];
+    const network = media?.networks?.[0] || {};
     const imgpath = `http://image.tmdb.org/t/p/original/${media.backdrop_path}`;
-    const networkLogo = `http://image.tmdb.org/t/p/w92/${network.logo_path}`;
+    const networkLogo = network.logo_path
+      ? `http://image.tmdb.org/t/p/w92/${network.logo_path}`
+      : "";
+
     return (
       <div className="product-header__wrapper">
-        <div className="product-header__image-logo clr-primary-text-on-dark">
-          <picture>
-            <source srcSet={networkLogo} />
-            <img
-              alt={network.name ? network.name : ""}
-              src={networkLogo}
-              className="product-header__image-logo__image"
-            />
-          </picture>
-        </div>
+        {networkLogo && (
+          <div className="product-header__image-logo clr-primary-text-on-dark">
+            <picture>
+              <source srcSet={networkLogo} />
+              <img
+                alt={network.name || ""}
+                src={networkLogo}
+                className="product-header__image-logo__image"
+              />
+            </picture>
+          </div>
+        )}
         <picture>
           <source type="image/jpeg" srcSet={imgpath}></source>
           <img
-            style={{ width: "100%", height: "945" }}
+            style={{ width: "100%", height: "945px" }}
             className="media-artwork-v2__image"
             src={imgpath}
             decoding="async"
@@ -43,20 +49,20 @@ const MediaHeader = (props) => {
             <div className="product-header__content__buttons">
               <div className="product-header__cta__prefix product-header__cta__prefix--channel-name typ-caption">
                 <span className="clr-secondary-text-on-dark">
-                  {network?.name ? network?.name : ""}
+                  {network?.name || ""}
                 </span>
               </div>
-              <button
-                className="product-page__cta-button--play product-page__cta-button typ-subhead-emph clr-primary-text-on-dark product-page__cta-button--mini product-page__cta-button--primary"
-                onClick={(e) => {
-                  openLink(media.homepage);
-                }}
-              >
-                <div className="text-truncate">
-                  <span className="product-page__cta-button__glyph product-page__cta-button__glyph--play"></span>
-                  Link to Content Provider
-                </div>
-              </button>
+              {media.homepage && (
+                <button
+                  className="product-page__cta-button--play product-page__cta-button typ-subhead-emph clr-primary-text-on-dark product-page__cta-button--mini product-page__cta-button--primary"
+                  onClick={() => openLink(media.homepage)}
+                >
+                  <div className="text-truncate">
+                    <span className="product-page__cta-button__glyph product-page__cta-button__glyph--play"></span>
+                    Link to Content Provider
+                  </div>
+                </button>
+              )}
             </div>
             <div className="product-header__content__details">
               <div className="line-clamp-wrapper">
@@ -70,7 +76,7 @@ const MediaHeader = (props) => {
       </div>
     );
   } else {
-    return <></>;
+    return null;
   }
 };
 
