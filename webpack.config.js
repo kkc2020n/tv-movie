@@ -30,7 +30,7 @@ const config = {
     rules: [
       {
         test: /\.(js|jsx|es)$/i,
-        exclude: /node-modules/,
+        exclude: /node_modules/,
         loader: "babel-loader"
       },
       {
@@ -51,7 +51,10 @@ const config = {
     ]
   },
   resolve: {
-    extensions: ["", ".js", ".jsx", ".es"]
+    extensions: ["*", ".js", ".jsx", ".es", ".mjs"],
+    alias: {
+      immer: path.resolve(__dirname, "node_modules/immer/dist/immer.legacy-esm.js")
+    }
   }
 };
 

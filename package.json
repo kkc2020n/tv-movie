@@ -29,7 +29,7 @@
     "watch": "webpack --watch",
     "serve": "webpack-dev-server",
     "predeploy": "npm run build",
-    "deploy": "gh-pages -d build"
+    "deploy": "gh-pages -d build --dotfiles"
   },
   "dependencies": {
     "@reduxjs/toolkit": "^2.2.7",
