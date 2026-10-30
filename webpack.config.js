@@ -3,15 +3,17 @@
 const path = require("path");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 
-const isProduction = process.env.NODE_ENV == "production";
-
 const stylesHandler = "style-loader";
 
 const config = {
   entry: "./src/main.jsx",
+  // Target browsers directly — prevents webpack 5 from emitting
+  // ES6+ iterator/arrow syntax that breaks older browsers
+  target: ["web", "es5"],
   output: {
-    filename: "bundle.js",
-    path: path.resolve(__dirname, "build")
+    filename: "bundle.[contenthash:8].js",
+    path: path.resolve(__dirname, "build"),
+    clean: true
   },
   watchOptions: { poll: true },
   devServer: {
@@ -27,7 +29,7 @@ const config = {
     rules: [
       {
         test: /\.(js|jsx|es)$/i,
-        exclude: /node-modules/,
+        exclude: /node_modules/,
         loader: "babel-loader"
       },
       {
@@ -48,15 +50,16 @@ const config = {
     ]
   },
   resolve: {
-    extensions: ["", ".js", ".jsx", ".es"]
+    extensions: ["*", ".js", ".jsx", ".es", ".mjs"],
+    alias: {
+      immer: path.resolve(__dirname, "node_modules/immer/dist/immer.legacy-esm.js")
+    }
   }
 };
 
-module.exports = () => {
-  if (isProduction) {
-    config.mode = "production";
-  } else {
-    config.mode = "development";
-  }
+module.exports = (env, argv) => {
+  const isProd = (argv && argv.mode === "production") || process.env.NODE_ENV === "production";
+  process.env.NODE_ENV = isProd ? "production" : "development";
+  config.mode = process.env.NODE_ENV;
   return config;
 };
