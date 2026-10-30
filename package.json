@@ -24,10 +24,10 @@
   "name": "react",
   "homepage": "https://kkc2020n.github.io",
   "scripts": {
-    "build": "webpack --mode=production",
-    "build:dev": "webpack --mode=development",
+    "build": "NODE_ENV=production webpack --mode=production",
+    "build:dev": "NODE_ENV=development webpack --mode=development",
     "watch": "webpack --watch",
-    "serve": "webpack-dev-server",
+    "serve": "NODE_ENV=development webpack-dev-server",
     "predeploy": "npm run build",
     "deploy": "gh-pages -d build --dotfiles"
   },

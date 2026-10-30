@@ -3,8 +3,6 @@
 const path = require("path");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 
-const isProduction = process.env.NODE_ENV == "production";
-
 const stylesHandler = "style-loader";
 
 const config = {
@@ -58,11 +56,9 @@ const config = {
   }
 };
 
-module.exports = () => {
-  if (isProduction) {
-    config.mode = "production";
-  } else {
-    config.mode = "development";
-  }
+module.exports = (env, argv) => {
+  const isProd = (argv && argv.mode === "production") || process.env.NODE_ENV === "production";
+  process.env.NODE_ENV = isProd ? "production" : "development";
+  config.mode = process.env.NODE_ENV;
   return config;
 };
