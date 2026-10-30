@@ -28,7 +28,7 @@
     "build:dev": "NODE_ENV=development webpack --mode=development",
     "watch": "webpack --watch",
     "serve": "NODE_ENV=development webpack-dev-server",
-    "predeploy": "npm run build",
+    "predeploy": "npm run build && cp build/bundle.*.js build/bundle.js && touch build/.nojekyll",
     "deploy": "gh-pages -d build --dotfiles"
   },
   "dependencies": {

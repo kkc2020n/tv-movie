@@ -11,8 +11,9 @@ const config = {
   // ES6+ iterator/arrow syntax that breaks older browsers
   target: ["web", "es5"],
   output: {
-    filename: "bundle.js",
-    path: path.resolve(__dirname, "build")
+    filename: "bundle.[contenthash:8].js",
+    path: path.resolve(__dirname, "build"),
+    clean: true
   },
   watchOptions: { poll: true },
   devServer: {
