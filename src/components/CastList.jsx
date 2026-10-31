@@ -5,7 +5,7 @@ const CastList = ({ data = [] }) => {
   const gridcoltmpl = cast.length >= 10 ? `repeat(${cast.length}, 1fr)` : `repeat(10, 1fr)`;
 
   const profiles = cast.map((item, i) => {
-    const imgpath = `http://image.tmdb.org/t/p/w235_and_h235_face/${item.profile_path}`;
+    const imgpath = `https://image.tmdb.org/t/p/w235_and_h235_face/${item.profile_path}`;
     return (
       <li key={i} data-index-item={i} style={{ scrollSnapAlign: "start" }}>
         <a>

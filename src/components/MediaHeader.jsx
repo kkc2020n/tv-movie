@@ -13,9 +13,9 @@ const MediaHeader = (props) => {
 
   if (!isEmpty) {
     const network = media?.networks?.[0] || {};
-    const imgpath = `http://image.tmdb.org/t/p/original/${media.backdrop_path}`;
+    const imgpath = `https://image.tmdb.org/t/p/original/${media.backdrop_path}`;
     const networkLogo = network.logo_path
-      ? `http://image.tmdb.org/t/p/w92/${network.logo_path}`
+      ? `https://image.tmdb.org/t/p/w92/${network.logo_path}`
       : "";
 
     return (
