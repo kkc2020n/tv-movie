@@ -3,14 +3,16 @@ import { API_KEY } from "../utils/Constants";
 export const ACCESS_TOKEN = "YOUR_ACCESS_TOKEN";
 
 export const seriesList = [
+  "The Office",
   "Friends",
   "Hometown Cha-Cha-Cha",
   "Brooklyn Nine-Nine",
-  "The Office",
+  "Modern Family",
   "The Big Bang Theory",
   "How I Met Your Mother",
   "House of the Dragon",
   "Game of Thrones",
+ 
 ];
 
 export async function fetchTVSeries() {
